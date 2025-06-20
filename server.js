@@ -12,7 +12,7 @@ let db,                                             // variable for our database
     dbName = 'todo'
 
 // connect our database string and pasword to our server inside the monocliend.connect method we will call our middlewares and get, put, delete and listen methods
-MongoClient.connect('mongodb+srv://franciscalandwehr:Eq3kxRusj331YY5I@cluster0.v4uzmpv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+MongoClient.connect(dbConnectionStr)
     .then(client => {
         console.log(`Connected to ${dbName} Database`)
         const db = client.db(dbName)
@@ -46,7 +46,8 @@ MongoClient.connect('mongodb+srv://franciscalandwehr:Eq3kxRusj331YY5I@cluster0.v
             })
 
             app.put('/markComplete', (request, response) => {               // put request is to updata an existing document from our database
-                db.collection('todos').updateOne({thing: request.body.itemFromJS},{  // we want to change the completed statues from false to true in just this item which we clicked
+                todoList
+                .updateOne({thing: request.body.itemFromJS},{  // we want to change the completed statues from false to true in just this item which we clicked
                     $set: {                                                            // in the filter of the method updateOne() we check with thing: request.body.itemFromJS which item got clicked on
                         completed: true                                                 // with the set method we change the complieted status to true
                     }
@@ -63,7 +64,8 @@ MongoClient.connect('mongodb+srv://franciscalandwehr:Eq3kxRusj331YY5I@cluster0.v
             })
 
             app.put('/markUnComplete', (request, response) => { // same as the put request for markcomplete but now we want to set the complete status from true to false
-                db.collection('todos').updateOne({thing: request.body.itemFromJS},{
+                todoList
+                .updateOne({thing: request.body.itemFromJS},{
                     $set: {
                         completed: false
                     }
@@ -72,21 +74,31 @@ MongoClient.connect('mongodb+srv://franciscalandwehr:Eq3kxRusj331YY5I@cluster0.v
                     upsert: false
                 })
                 .then(result => {
-                    console.log('Marked Complete')
-                    response.json('Marked Complete')
+                    console.log('Marked Uncomplete')
+                    response.json('Marked Uncomplete')
                 })
                 .catch(error => console.error(error))
 
             })
 
             app.delete('/deleteItem', (request, response) => {                              // delete request to delete an document from our database
-                db.collection('todos').deleteOne({thing: request.body.itemFromJS})          // here we decide to delete one document in the filter we put the query which document should be deleted
+                todoList
+                .deleteOne({thing: request.body.itemFromJS})          // here we decide to delete one document in the filter we put the query which document should be deleted
                 .then(result => {
                     console.log('Todo Deleted')                                             // as well here we give back a promise so we responde to the promis with .then or catch and always giving back response.json()
                     response.json('Todo Deleted')
                 })
                 .catch(error => console.error(error))
 
+            })
+            app.delete('/deleteAll', (req, res)=>{
+                todoList
+                .deleteMany({})
+                .then(result =>{
+                    console.log('Deleted all Items')
+                    res.json('Deleted all items')
+                })
+                .catch(error => console.error(error))
             })
 
             app.listen(process.env.PORT || PORT, ()=>{                          // we tell the program to which port (localhost: to listen), process.env.PORT this is when we upload our server to someone others computer and thy decide which port 

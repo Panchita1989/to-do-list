@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <!DOCTYPE html>
@@ -21,17 +21,20 @@
 <body>
     <h1>Todo List: </h1>
     <ul class="todoItems">
-    <% for(let i=0; i < items.length; i++) {%>
-        <li class="item">
-            <% if(items[i].completed === true) {%>
-                <span class='completed'><%= items[i].thing %></span>
-            <% }else{ %>
-                <span><%= items[i].thing %></span>
-            <% } %>    
-            <span class='fa fa-trash'></span>
-        </li>
-    <% } %>
+        <% for(let i = 0; i < items.length; i++) { %>
+            <li class="item">
+                <input 
+                    type="checkbox" 
+                    class="<%= items[i].completed ? 'completed' : 'uncompleted' %>"
+                    <%= items[i].completed ? 'checked' : '' %>>
+      
+                <span class="itemText"><%= items[i].thing %></span>
+                <span class="fa fa-trash"></span>
+            </li>
+        <% } %>
     </ul>
+    <button class="deleteAll">Delete All</button>
+
 
     <h2>Left to do: <%= left %></h2>
 
